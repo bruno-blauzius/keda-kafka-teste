@@ -8,17 +8,18 @@ spec:
     name: keda-kafka-consumer
   minReplicaCount: 1
   maxReplicaCount: 10
-  pollingInterval: 5
+  pollingInterval: 30
   triggers:
   - type: kafka
     metadata:
       bootstrapServers: b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096,b-2.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096
       consumerGroup: keda-consumer-group
       topic: keda-teste
-      lagThreshold: "1"
+      lagThreshold: "5"
       offsetResetPolicy: latest
       scaleToZeroOnInvalidOffset: "false"
       allowIdleConsumers: "true"
+      excludePersistentLag: "false"
       sasl: scram_sha512
       tls: enable
     authenticationRef:
