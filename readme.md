@@ -297,8 +297,12 @@ helm install keda kedacore/keda --namespace keda --create-namespace
 
 ```bash
 #install keda
-kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
+kubectl apply --server-side=true \
+  -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
 ```
+
+**Nota**: O parâmetro `--server-side=true` é necessário para contornar o
+limite de 256KB nas anotações do CRD `scaledjobs.keda.sh`.
 
 ### Verify installation
 
