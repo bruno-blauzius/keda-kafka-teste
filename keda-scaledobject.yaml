@@ -13,8 +13,7 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: >
-        b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096, b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096
+      bootstrapServers: b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096,b-2.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096
       consumerGroup: python-consumer-group
       topic: settlement-remuneration-unit-kafka-homolog
       lagThreshold: "1"
