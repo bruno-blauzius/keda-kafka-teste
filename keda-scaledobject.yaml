@@ -14,7 +14,7 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096,b-2.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096
-      consumerGroup: python-consumer-group
+      consumerGroup: keda-consumer-group
       topic: settlement-remuneration-unit-kafka-homolog
       lagThreshold: "1"
       offsetResetPolicy: latest
