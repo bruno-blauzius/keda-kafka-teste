@@ -15,9 +15,10 @@ spec:
       bootstrapServers: b-1.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096,b-2.kafka.gk6ci4.c20.kafka.us-east-1.amazonaws.com:9096
       consumerGroup: keda-consumer-group
       topic: keda-teste
-      lagThreshold: "10"
+      lagThreshold: "1"
       offsetResetPolicy: latest
-      scaleToZeroOnInvalidOffset: "true"
+      scaleToZeroOnInvalidOffset: "false"
+      allowIdleConsumers: "true"
       sasl: scram_sha512
       tls: enable
     authenticationRef:
