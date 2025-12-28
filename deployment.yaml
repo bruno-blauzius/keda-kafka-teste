@@ -33,7 +33,7 @@ spec:
         fsGroup: 100000
       containers:
       - name: kafka-consumer
-        image: bruno01/keda-kafka:02
+        image: bruno01/keda-kafka:03
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
