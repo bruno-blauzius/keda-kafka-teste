@@ -8,7 +8,7 @@ spec:
     name: keda-kafka-consumer
   minReplicaCount: 1
   maxReplicaCount: 10
-  pollingInterval: 1
+  pollingInterval: 30
   triggers:
   - type: kafka
     metadata:
