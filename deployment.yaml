@@ -42,7 +42,7 @@ spec:
             drop:
             - ALL
         env:
-        - name: KAFKA_BROKERS
+        - name: KAFKA_BOOTSTRAP_SERVERS
           valueFrom:
             secretKeyRef:
               name: kafka-config

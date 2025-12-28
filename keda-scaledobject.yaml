@@ -16,5 +16,5 @@ spec:
       bootstrapServers: 172.30.128.1:29092
       consumerGroup: keda-consumer-group
       topic: settlement-remuneration-unit-kafka-homolog
-      lagThreshold: "10"
+      lagThreshold: 20
       offsetResetPolicy: latest
