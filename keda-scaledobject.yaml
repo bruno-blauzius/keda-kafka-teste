@@ -13,7 +13,7 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: localhost:29092
+      bootstrapServers: host.docker.internal:29092
       consumerGroup: keda-consumer-group
       topic: settlement-remuneration-unit-kafka-homolog
       lagThreshold: "10"

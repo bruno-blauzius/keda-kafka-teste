@@ -1,8 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 namespace: dev
-
 resources:
 - namespace.yaml
 - secret.yaml
@@ -11,12 +9,3 @@ resources:
 - networkpolicy.yaml
 - poddisruptionbudget.yaml
 - keda-scaledobject.yaml
-
-commonLabels:
-  app.kubernetes.io/name: keda-kafka-consumer
-  app.kubernetes.io/managed-by: kustomize
-  app.kubernetes.io/part-of: kafka-keda-system
-
-commonAnnotations:
-  project: kafka-keda-scaled
-  team: devops
