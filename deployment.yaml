@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keda-kafka-consumer
+  namespace: dev
+  labels:
+    app: keda-kafka-consumer
+    component: consumer
+    version: v1
+  annotations:
+    description: "Kafka consumer scaled by KEDA"
+    author: "DevOps Team"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: keda-kafka-consumer
+  template:
+    metadata:
+      labels:
+        app: keda-kafka-consumer
+        component: consumer
+        version: v1
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: kafka-consumer
+        image: bruno01/keda-kafka:01
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+        env:
+        - name: KAFKA_BROKERS
+          valueFrom:
+            secretKeyRef:
+              name: kafka-config
+              key: kafka-brokers
+        - name: KAFKA_TOPIC
+          valueFrom:
+            secretKeyRef:
+              name: kafka-config
+              key: kafka-topic
+        - name: KAFKA_CONSUMER_GROUP
+          valueFrom:
+            secretKeyRef:
+              name: kafka-config
+              key: kafka-consumer-group
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
