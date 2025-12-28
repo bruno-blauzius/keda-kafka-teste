@@ -33,7 +33,7 @@ spec:
         fsGroup: 100000
       containers:
       - name: kafka-consumer
-        image: bruno01/keda-kafka:01
+        image: bruno01/keda-kafka:02
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
@@ -47,6 +47,16 @@ spec:
             secretKeyRef:
               name: kafka-config
               key: kafka-brokers
+        - name: KAFKA_USER
+          valueFrom:
+            secretKeyRef:
+              name: kafka-config
+              key: kafka-username
+        - name: KAFKA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kafka-config
+              key: kafka-password
         - name: KAFKA_TOPIC
           valueFrom:
             secretKeyRef:
