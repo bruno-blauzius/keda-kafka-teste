@@ -62,7 +62,7 @@ spec:
             command:
             - sh
             - -c
-            - pgrep -f kafka || pgrep -f python || pgrep -f java
+            - ps aux | grep -v grep | grep -E 'kafka|python|java' || exit 1
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
@@ -72,7 +72,7 @@ spec:
             command:
             - sh
             - -c
-            - pgrep -f kafka || pgrep -f python || pgrep -f java
+            - ps aux | grep -v grep | grep -E 'kafka|python|java' || exit 1
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
