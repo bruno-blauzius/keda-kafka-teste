@@ -1,0 +1,45 @@
+# Trivy Configuration for Kubernetes Security Scanning
+
+# Severity levels to scan for
+severity:
+- CRITICAL
+- HIGH
+- MEDIUM
+
+# Security checks to include
+security-checks:
+- vuln
+- config
+- secret
+
+# Kubernetes-specific checks
+kubernetes:
+  # Check for security issues in Kubernetes manifests
+  enabled: true
+
+  # Policies to check
+  policies:
+  - security
+  - best-practices
+
+# Misconfigurations to check
+misconfig:
+  enabled: true
+  scanners:
+  - kubernetes
+
+# Secret scanning
+secret:
+  enabled: true
+
+# Exit code (0 = success, 1 = vulnerabilities found)
+exit-code: 1
+
+# Output format
+format: table
+
+# Ignore unfixed vulnerabilities
+ignore-unfixed: false
+
+# Timeout
+timeout: 10m

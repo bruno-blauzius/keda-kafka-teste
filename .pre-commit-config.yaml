@@ -1,0 +1,55 @@
+# Pre-commit hooks para validação de manifests Kubernetes
+repos:
+# Hooks básicos
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: trailing-whitespace
+    name: Remove trailing whitespace
+  - id: end-of-file-fixer
+    name: Fix end of files
+  - id: check-yaml
+    name: Check YAML syntax
+    args: [ '--allow-multiple-documents' ]
+  - id: check-added-large-files
+    name: Check for large files
+    args: [ '--maxkb=500' ]
+  - id: check-merge-conflict
+    name: Check for merge conflicts
+  - id: mixed-line-ending
+    name: Fix mixed line endings
+
+# YAML Linting
+- repo: https://github.com/adrienverge/yamllint
+  rev: v1.35.1
+  hooks:
+  - id: yamllint
+    name: Lint YAML files
+    args: [ '-c', '.yamllint.yaml', '.' ]
+    pass_filenames: false
+
+# Security and best practices with kube-score
+- repo: local
+  hooks:
+  - id: kube-score
+    name: Kubernetes best practices with kube-score
+    entry: wsl /tmp/kube-score score --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id
+    language: system
+    files: \.(yaml|yml)$
+    pass_filenames: true
+    exclude: ^(\.pre-commit-config\.yaml|\.yamllint\.yaml|trivy\.yaml|readme\.md|Makefile|install-tools\.ps1)$
+
+# Secret detection
+- repo: https://github.com/gitleaks/gitleaks
+  rev: v8.18.1
+  hooks:
+  - id: gitleaks
+    name: Detect secrets with gitleaks
+
+# Markdown linting (for documentation)
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.38.0
+  hooks:
+  - id: markdownlint
+    name: Lint Markdown files
+    args: [ '--fix' ]

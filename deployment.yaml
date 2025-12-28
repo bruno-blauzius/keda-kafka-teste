@@ -29,15 +29,15 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 10000
+        fsGroup: 100000
       containers:
       - name: kafka-consumer
         image: bruno01/keda-kafka:01
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: true
           capabilities:
             drop:
             - ALL
@@ -80,6 +80,8 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "100m"
+            ephemeral-storage: "1Gi"
           limits:
             memory: "256Mi"
             cpu: "500m"
+            ephemeral-storage: "2Gi"

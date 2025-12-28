@@ -8,6 +8,7 @@ resources:
 - secret.yaml
 - deployment.yaml
 - service.yaml
+- networkpolicy.yaml
 - poddisruptionbudget.yaml
 - keda-scaledobject.yaml
 

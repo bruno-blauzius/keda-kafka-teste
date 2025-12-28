@@ -1,0 +1,30 @@
+---
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  indentation:
+    spaces: 2
+    indent-sequences: false
+  document-start: disable
+  truthy:
+    allowed-values: [ 'true', 'false', 'on', 'off' ]
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: {}
+  brackets:
+    max-spaces-inside: 1
+  braces:
+    max-spaces-inside: 0
+  key-duplicates: enable
+  trailing-spaces: {}
+  new-line-at-end-of-file: {}
+
+ignore: |
+  .git/
+  .venv/
+  venv/
+  node_modules/
+  .pre-commit-config.yaml
