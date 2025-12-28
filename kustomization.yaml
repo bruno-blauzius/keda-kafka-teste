@@ -8,4 +8,5 @@ resources:
 - service.yaml
 - networkpolicy.yaml
 - poddisruptionbudget.yaml
+- triggerauthentication.yaml
 - keda-scaledobject.yaml
