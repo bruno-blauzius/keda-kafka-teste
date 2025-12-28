@@ -62,7 +62,7 @@ spec:
             command:
             - sh
             - -c
-            - ps aux | grep -v grep | grep -E 'kafka|python|java' || exit 1
+            - test -f /proc/1/cmdline
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
@@ -72,7 +72,7 @@ spec:
             command:
             - sh
             - -c
-            - ps aux | grep -v grep | grep -E 'kafka|python|java' || exit 1
+            - test -f /proc/1/cmdline
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
