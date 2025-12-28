@@ -18,6 +18,7 @@ spec:
       topic: settlement-remuneration-unit-kafka-homolog
       lagThreshold: "1"
       offsetResetPolicy: latest
-      sasl: plaintext
+      sasl: scram_sha512
+      tls: enable
     authenticationRef:
       name: kafka-trigger-auth
