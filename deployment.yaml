@@ -11,7 +11,7 @@ metadata:
     description: "Kafka consumer scaled by KEDA"
     author: "DevOps Team"
 spec:
-  replicas: 1
+  # replicas gerenciadas pelo KEDA HPA - não definir aqui
   strategy:
     type: RollingUpdate
     rollingUpdate:
