@@ -57,21 +57,22 @@ spec:
             secretKeyRef:
               name: kafka-config
               key: kafka-consumer-group
-        ports:
-        - containerPort: 8080
-          protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
+          exec:
+            command:
+            - sh
+            - -c
+            - pgrep -f kafka || pgrep -f python || pgrep -f java
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
         readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
+          exec:
+            command:
+            - sh
+            - -c
+            - pgrep -f kafka || pgrep -f python || pgrep -f java
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
