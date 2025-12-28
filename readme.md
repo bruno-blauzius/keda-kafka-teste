@@ -297,7 +297,7 @@ helm install keda kedacore/keda --namespace keda --create-namespace
 
 ```bash
 #install keda
-kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.12.0/keda-2.12.0.yaml
+kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
 ```
 
 ### Verify installation
