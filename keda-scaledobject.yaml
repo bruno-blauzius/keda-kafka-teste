@@ -9,7 +9,6 @@ spec:
   minReplicaCount: 1
   maxReplicaCount: 10
   pollingInterval: 30
-  cooldownPeriod: 300
   triggers:
   - type: kafka
     metadata:
@@ -18,6 +17,7 @@ spec:
       topic: keda-teste
       lagThreshold: "1"
       offsetResetPolicy: latest
+      scaleToZeroOnInvalidOffset: "true"
       sasl: scram_sha512
       tls: enable
     authenticationRef:
