@@ -82,7 +82,7 @@ spec:
             command:
             - sh
             - -c
-            - test -f /proc/1/cmdline
+            - kill -0 1 2>/dev/null
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
