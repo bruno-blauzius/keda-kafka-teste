@@ -17,7 +17,7 @@ spec:
       topic: keda-teste
       lagThreshold: "2"
       offsetResetPolicy: latest
-      scaleToZeroOnInvalidOffset: "false"
+      scaleToZeroOnInvalidOffset: "true"
       allowIdleConsumers: "true"
       excludePersistentLag: "false"
       sasl: scram_sha512
