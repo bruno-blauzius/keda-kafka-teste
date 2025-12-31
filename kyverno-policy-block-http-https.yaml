@@ -2,7 +2,7 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: block-http-https-ports
+  name: policy-block-http-https-ports
   annotations:
     policies.kyverno.io/title: Block HTTP and HTTPS Ports
     policies.kyverno.io/category: Security
@@ -39,7 +39,7 @@ spec:
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: block-ingress-resources
+  name: policy-block-ingress-resources
   annotations:
     policies.kyverno.io/title: Block All Ingress Resources
     policies.kyverno.io/category: Security
@@ -64,7 +64,7 @@ spec:
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: block-loadbalancer-services
+  name: policy-block-loadbalancer-services
   annotations:
     policies.kyverno.io/title: Block LoadBalancer Services on Web Ports
     policies.kyverno.io/category: Security

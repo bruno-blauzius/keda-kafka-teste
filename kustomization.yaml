@@ -10,4 +10,10 @@ resources:
 - poddisruptionbudget.yaml
 - triggerauthentication.yaml
 - keda-scaledobject.yaml
-- kyverno-block-http-https.yaml
+- kyverno-policy-block-http-https.yaml
+- kyverno-policy-image-security.yaml
+- kyverno-policy-security-context.yaml
+- kyverno-policy-required-labels.yaml
+- kyverno-policy-resources-probes.yaml
+- kyverno-policy-auto-mutate.yaml
+- kyverno-policy-secrets-validation.yaml

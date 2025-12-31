@@ -1,0 +1,112 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: policy-disallow-latest-tag
+  annotations:
+    policies.kyverno.io/title: Disallow Latest Tag
+    policies.kyverno.io/category: Best Practices, Security
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Tag 'latest' não garante versionamento consistente. Esta política força o uso de tags específicas para rastreabilidade e rollback.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: require-image-tag
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    validate:
+      message: "Imagens devem ter tag específica. Tag 'latest' não é permitida."
+      pattern:
+        spec:
+          =(ephemeralContainers):
+          - =(image): "!*:latest"
+          =(initContainers):
+          - =(image): "!*:latest"
+          containers:
+          - image: "!*:latest"
+  - name: require-image-tag-deployment
+    match:
+      any:
+      - resources:
+          kinds:
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    validate:
+      message: "Imagens devem ter tag específica. Tag 'latest' não é permitida."
+      pattern:
+        spec:
+          template:
+            spec:
+              =(ephemeralContainers):
+              - =(image): "!*:latest"
+              =(initContainers):
+              - =(image): "!*:latest"
+              containers:
+              - image: "!*:latest"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: policy-trusted-registries
+  annotations:
+    policies.kyverno.io/title: Require Trusted Image Registries
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Permite apenas imagens de registries confiáveis aprovados pela organização.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: validate-registries
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    validate:
+      message: >-
+        Apenas imagens de registries aprovados são permitidas: docker.io, gcr.io, ghcr.io, quay.io, registry.k8s.io, bruno01
+      pattern:
+        spec:
+          =(ephemeralContainers):
+          - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"
+          =(initContainers):
+          - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"
+          containers:
+          - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"
+  - name: validate-registries-deployment
+    match:
+      any:
+      - resources:
+          kinds:
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    validate:
+      message: >-
+        Apenas imagens de registries aprovados são permitidas: docker.io, gcr.io, ghcr.io, quay.io, registry.k8s.io, bruno01
+      pattern:
+        spec:
+          template:
+            spec:
+              =(ephemeralContainers):
+              - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"
+              =(initContainers):
+              - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"
+              containers:
+              - image: "docker.io/* | gcr.io/* | ghcr.io/* | quay.io/* | registry.k8s.io/* | bruno01/* | */bruno01/*"

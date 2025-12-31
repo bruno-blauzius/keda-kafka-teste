@@ -1,0 +1,75 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: policy-add-default-labels
+  annotations:
+    policies.kyverno.io/title: Add Default Labels
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: low
+    policies.kyverno.io/subject: Pod, Deployment
+    policies.kyverno.io/description: >-
+      Adiciona automaticamente labels padrão se não especificadas. Facilita governança e automação.
+spec:
+  background: true
+  rules:
+  - name: add-managed-by-label
+    match:
+      any:
+      - resources:
+          kinds:
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    mutate:
+      patchStrategicMerge:
+        metadata:
+          labels:
+            +(managed-by): "kubernetes"
+            +(environment): "dev"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: policy-add-network-policy
+  annotations:
+    policies.kyverno.io/title: Auto-Generate NetworkPolicy
+    policies.kyverno.io/category: Security, Network
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Namespace
+    policies.kyverno.io/description: >-
+      Gera automaticamente uma NetworkPolicy default para novos namespaces. Implementa deny-all por padrão (zero trust).
+spec:
+  background: false
+  rules:
+  - name: create-default-deny-all
+    match:
+      any:
+      - resources:
+          kinds:
+          - Namespace
+          operations:
+          - CREATE
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
+          - kube-public
+          - kube-node-lease
+          - kyverno
+          - keda
+          - argocd
+          - default
+    generate:
+      synchronize: true
+      apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      name: default-deny-all
+      namespace: "{{request.object.metadata.name}}"
+      data:
+        spec:
+          podSelector: {}
+          policyTypes:
+          - Ingress
+          - Egress
