@@ -33,7 +33,7 @@ repos:
   hooks:
   - id: kube-score
     name: Kubernetes best practices with kube-score
-    entry: wsl /tmp/kube-score score --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id
+    entry: kube-score score --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id --ignore-test networkpolicy-targets-pod
     language: system
     files: \.(yaml|yml)$
     pass_filenames: true

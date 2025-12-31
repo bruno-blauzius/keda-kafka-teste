@@ -1,0 +1,95 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: block-http-https-ports
+  annotations:
+    policies.kyverno.io/title: Block HTTP and HTTPS Ports
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod, Deployment
+    policies.kyverno.io/description: >-
+      Bloqueia containers que expõem portas HTTP (80, 8080, 8000) e HTTPS (443, 8443). Esta política impede o uso de protocolos web.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: block-web-ports
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+    validate:
+      message: >-
+        Bloqueado: Container não pode expor portas HTTP/HTTPS (80, 443, 8080, 8000, 8443). Tráfego web não é permitido neste cluster.
+      deny:
+        conditions:
+          any:
+          - key: "{{ request.object.spec.containers[].ports[].containerPort }}"
+            operator: AnyIn
+            value: [ 80, 443, 8080, 8000, 8443 ]
+          - key: "{{ request.object.spec.template.spec.containers[].ports[].containerPort }}"
+            operator: AnyIn
+            value: [ 80, 443, 8080, 8000, 8443 ]
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: block-ingress-resources
+  annotations:
+    policies.kyverno.io/title: Block All Ingress Resources
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Ingress
+    policies.kyverno.io/description: >-
+      Bloqueia completamente a criação de recursos Ingress no cluster. Ingress expõe serviços via HTTP/HTTPS.
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+  - name: deny-all-ingress
+    match:
+      any:
+      - resources:
+          kinds:
+          - Ingress
+    validate:
+      message: "Recursos Ingress não são permitidos. Tráfego HTTP/HTTPS está bloqueado."
+      deny: {}
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: block-loadbalancer-services
+  annotations:
+    policies.kyverno.io/title: Block LoadBalancer Services on Web Ports
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Service
+    policies.kyverno.io/description: >-
+      Bloqueia Services do tipo LoadBalancer ou NodePort que expõem portas HTTP/HTTPS (80, 443, 8080, 8443, 8000).
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: block-web-loadbalancer
+    match:
+      any:
+      - resources:
+          kinds:
+          - Service
+    validate:
+      message: "Services não podem expor portas HTTP/HTTPS (80, 443, 8080, 8443, 8000) via LoadBalancer ou NodePort."
+      deny:
+        conditions:
+          any:
+          - key: "{{ request.object.spec.type }}"
+            operator: AnyIn
+            value: [ "LoadBalancer", "NodePort" ]
+          - key: "{{ request.object.spec.ports[].port }}"
+            operator: AnyIn
+            value: [ 80, 443, 8080, 8000, 8443 ]

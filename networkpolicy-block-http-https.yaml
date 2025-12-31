@@ -1,0 +1,55 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-http-https-egress
+  namespace: dev
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  # Permite DNS
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  # Bloqueia HTTP/HTTPS - permite outras portas
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 9092 # Kafka
+    - protocol: TCP
+      port: 2181 # Zookeeper
+  # Bloqueia explicitamente portas web para qualquer destino externo
+  - to:
+    - namespaceSelector: {}
+      podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 1024
+      endPort: 65535
+  # Nega acesso às portas específicas HTTP/HTTPS (não há como negar explicitamente, então não listamos)
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-http-https-ingress
+  namespace: dev
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  # Permite tráfego interno entre pods do namespace
+  - from:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 9092 # Kafka
+    # Adicione aqui outras portas necessárias, exceto 80, 443, 8080, 8000, 8443
+    # Nega implicitamente todo o resto (incluindo portas HTTP/HTTPS)

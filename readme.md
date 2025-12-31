@@ -328,11 +328,13 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 
 ## Instalação do Kyverno
 
-Kyverno [Documentation](https://kyverno.io/docs/policy-types/cluster-policy/validate/)
+Kyverno [Documentation](https://kyverno.io/docs/installation/methods/#install-kyverno-using-yamls)
 
 ### Apply the oficial manifest
 
 ```bash
+kubectl create -f https://github.com/kyverno/kyverno/releases/download/v1.16.0/install.yaml
+# or
 kubectl apply -f https://github.com/kyverno/kyverno/releases/latest/download/install.yaml
 ```
 

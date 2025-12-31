@@ -6,6 +6,8 @@ resources:
 - secret.yaml
 - deployment.yaml
 - networkpolicy.yaml
+- networkpolicy-block-http-https.yaml
 - poddisruptionbudget.yaml
 - triggerauthentication.yaml
 - keda-scaledobject.yaml
+- kyverno-block-http-https.yaml
