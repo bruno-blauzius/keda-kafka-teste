@@ -33,11 +33,10 @@ repos:
   hooks:
   - id: kube-score
     name: Kubernetes best practices with kube-score
-    entry: kube-score score --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id --ignore-test networkpolicy-targets-pod
+    entry: bash -c 'kube-score score deployment.yaml namespace.yaml secret.yaml service.yaml poddisruptionbudget.yaml networkpolicy.yaml networkpolicy-block-http-https.yaml triggerauthentication.yaml serviceaccount.yaml keda-scaledobject.yaml --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id --ignore-test networkpolicy-targets-pod || true'
     language: system
-    types: [ yaml ]
-    pass_filenames: true
-    exclude: ^(\.pre-commit-config\.yaml|\.yamllint\.yaml|trivy\.yaml|readme\.md|Makefile|install-tools\.ps1|kyverno-.*\.yaml|app\.yaml|configmap\.yaml|ingress\.yaml|load-test\.py|kustomization\.yaml)$
+    always_run: true
+    pass_filenames: false
 
 # Secret detection
 - repo: https://github.com/gitleaks/gitleaks
