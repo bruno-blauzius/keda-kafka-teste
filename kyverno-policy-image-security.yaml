@@ -20,9 +20,6 @@ spec:
       - resources:
           kinds:
           - Pod
-          - Deployment
-          - StatefulSet
-          - DaemonSet
     validate:
       message: "Imagens devem ter tag específica. Tag 'latest' não é permitida."
       pattern:
@@ -75,9 +72,6 @@ spec:
       - resources:
           kinds:
           - Pod
-          - Deployment
-          - StatefulSet
-          - DaemonSet
     validate:
       message: >-
         Apenas imagens de registries aprovados são permitidas: docker.io, gcr.io, ghcr.io, quay.io, registry.k8s.io, bruno01
