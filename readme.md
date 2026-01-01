@@ -422,6 +422,30 @@ kubectl port-forward -n policy-reporter svc/policy-reporter-ui 8082:8080
 - ✅ Tendências históricas de compliance
 - ✅ Integração nativa com Kyverno
 
+### Filtrar Namespaces Monitorados
+
+Por padrão, o Policy Reporter monitora todos os namespaces. Para filtrar:
+
+```bash
+# Monitorar apenas namespace dev
+helm upgrade policy-reporter policy-reporter/policy-reporter \
+  -n policy-reporter \
+  --reuse-values \
+  --set namespaceSelector.include="{dev}"
+
+# Monitorar dev e production
+helm upgrade policy-reporter policy-reporter/policy-reporter \
+  -n policy-reporter \
+  --reuse-values \
+  --set namespaceSelector.include="{dev,production}"
+
+# Voltar a monitorar todos os namespaces
+helm upgrade policy-reporter policy-reporter/policy-reporter \
+  -n policy-reporter \
+  --reuse-values \
+  --set namespaceSelector.include=null
+```
+
 ### Comandos Úteis - Policy Reporter
 
 ```bash
