@@ -1,0 +1,41 @@
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: policy-reporter-exceptions
+  namespace: kyverno
+spec:
+  exceptions:
+  - policyName: policy-block-http-https-ports
+    ruleNames:
+    - block-web-ports
+  - policyName: policy-require-non-root
+    ruleNames:
+    - check-containers
+  - policyName: policy-require-resource-limits
+    ruleNames:
+    - check-resources
+  - policyName: policy-disallow-latest-tag
+    ruleNames:
+    - require-image-tag
+  - policyName: policy-trusted-registries
+    ruleNames:
+    - validate-registries
+  - policyName: policy-block-loadbalancer-services
+    ruleNames:
+    - block-web-loadbalancer
+  - policyName: policy-require-labels
+    ruleNames:
+    - check-required-labels
+  - policyName: policy-validate-label-format
+    ruleNames:
+    - check-app-label-format
+  match:
+    any:
+    - resources:
+        kinds:
+        - Deployment
+        - Service
+        - Pod
+        - ReplicaSet
+        namespaces:
+        - policy-reporter

@@ -347,4 +347,129 @@ kubectl get pods -n kyverno
 - kyverno-admission-controller
 - kyverno-background-controller
 - kyverno-cleanup-controller
+- kyverno-reports-controller
+```
+
+## 📊 Visualização de Governança - Policy Reporter
+
+Policy Reporter oferece visualização completa das políticas do Kyverno com dashboards, gráficos e relatórios em tempo real.
+
+### Instalação do Policy Reporter
+
+```bash
+# Adicionar repositório Helm
+helm repo add policy-reporter https://kyverno.github.io/policy-reporter
+helm repo update
+
+# Instalar Policy Reporter com UI e plugin Kyverno
+helm install policy-reporter policy-reporter/policy-reporter \
+  --namespace policy-reporter \
+  --create-namespace \
+  --set ui.enabled=true \
+  --set kyvernoPlugin.enabled=true \
+  --set ui.plugins.kyverno=true \
+  --set metrics.enabled=true
+```
+
+### Configurar Políticas em Modo Audit para Policy Reporter
+
+Para evitar que as políticas do Kyverno bloqueiem a instalação do Policy Reporter:
+
+```powershell
+# Windows PowerShell
+kubectl get clusterpolicies -o name | ForEach-Object {
+  kubectl patch $_ --type='json' -p='[{
+    "op": "add",
+    "path": "/spec/validationFailureActionOverrides",
+    "value": [{
+      "action": "Audit",
+      "namespaces": ["policy-reporter"]
+    }]
+  }]'
+}
+```
+
+### Verificar Instalação
+
+```bash
+# Verificar pods
+kubectl get pods -n policy-reporter
+
+# Verificar serviços
+kubectl get svc -n policy-reporter
+
+# Ver logs
+kubectl logs -n policy-reporter -l app.kubernetes.io/name=policy-reporter -f
+```
+
+### Acessar Policy Reporter UI
+
+```bash
+# Port-forward para acessar a interface web
+kubectl port-forward -n policy-reporter svc/policy-reporter-ui 8082:8080
+```
+
+**Acesso**: <http://localhost:8082>
+
+### Recursos da UI
+
+- ✅ Dashboard com visão geral de todas as políticas
+- ✅ Status de compliance em tempo real
+- ✅ Gráficos de violações por namespace/política
+- ✅ Filtros por severity (info, warning, error)
+- ✅ Relatórios detalhados de cada recurso
+- ✅ Tendências históricas de compliance
+- ✅ Integração nativa com Kyverno
+
+### Comandos Úteis - Policy Reporter
+
+```bash
+# Listar todos os Policy Reports
+kubectl get policyreports -A
+
+# Ver relatórios do namespace dev
+kubectl get policyreport -n dev
+
+# Detalhar um relatório específico
+kubectl describe policyreport <report-name> -n dev
+
+# Ver cluster-wide reports
+kubectl get clusterpolicyreports
+
+# Logs do Policy Reporter
+kubectl logs -n policy-reporter -l app.kubernetes.io/name=policy-reporter -f
+
+# Logs da UI
+kubectl logs -n policy-reporter -l app.kubernetes.io/name=policy-reporter-ui -f
+
+# Reiniciar Policy Reporter
+kubectl rollout restart deployment -n policy-reporter
+
+# Desinstalar Policy Reporter
+helm uninstall policy-reporter -n policy-reporter
+kubectl delete namespace policy-reporter
+```
+
+### Métricas Prometheus
+
+Se você tem Prometheus instalado, o Policy Reporter exporta métricas:
+
+```bash
+# Endpoint de métricas
+kubectl port-forward -n policy-reporter svc/policy-reporter 8080:8080
+
+# Acessar métricas
+curl http://localhost:8080/metrics
+```
+
+### Integração com Grafana
+
+Importar dashboard oficial do Policy Reporter:
+
+- **Dashboard ID**: 18223
+- **URL**: <https://grafana.com/grafana/dashboards/18223>
+
+```bash
+# Se usar kube-prometheus-stack
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 ```

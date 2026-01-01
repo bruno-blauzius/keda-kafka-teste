@@ -18,3 +18,4 @@ resources:
 - kyverno-policy-resources-probes.yaml
 - kyverno-policy-auto-mutate.yaml
 - kyverno-policy-secrets-validation.yaml
+- kyverno-policy-exception-policy-reporter.yaml
