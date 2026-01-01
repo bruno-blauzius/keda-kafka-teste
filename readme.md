@@ -352,7 +352,8 @@ kubectl get pods -n kyverno
 
 ## 📊 Visualização de Governança - Policy Reporter
 
-Policy Reporter oferece visualização completa das políticas do Kyverno com dashboards, gráficos e relatórios em tempo real.
+Policy Reporter oferece visualização completa das políticas do Kyverno com
+dashboards, gráficos e relatórios em tempo real.
 
 ### Instalação do Policy Reporter
 
