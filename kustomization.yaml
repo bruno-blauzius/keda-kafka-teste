@@ -9,6 +9,7 @@ resources:
 - networkpolicy-block-http-https.yaml
 - poddisruptionbudget.yaml
 - triggerauthentication.yaml
+- serviceaccount.yaml
 - keda-scaledobject.yaml
 - kyverno-policy-block-http-https.yaml
 - kyverno-policy-image-security.yaml
