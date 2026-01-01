@@ -7,9 +7,11 @@ metadata:
     app: keda-kafka-consumer
     component: consumer
     version: v1
+    managed-by: keda
+    owner: devops-team
   annotations:
     description: "Kafka consumer scaled by KEDA"
-    author: "DevOps Team"
+    author: "Bruno Blauzius Schuindt"
 spec:
   # replicas gerenciadas pelo KEDA HPA - não definir aqui
   strategy:
@@ -27,10 +29,20 @@ spec:
         component: consumer
         version: v1
     spec:
+      serviceAccountName: keda-kafka-consumer
       securityContext:
         runAsNonRoot: true
         runAsUser: 10000
         fsGroup: 100000
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: keda-kafka-consumer
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: kafka-consumer
         image: bruno01/keda-kafka:04
