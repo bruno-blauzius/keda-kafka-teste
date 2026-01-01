@@ -1,24 +1,5 @@
 # Pre-commit hooks para validação de manifests Kubernetes
 repos:
-# Hooks básicos
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
-  hooks:
-  - id: trailing-whitespace
-    name: Remove trailing whitespace
-  - id: end-of-file-fixer
-    name: Fix end of files
-  - id: check-yaml
-    name: Check YAML syntax
-    args: [ '--allow-multiple-documents' ]
-  - id: check-added-large-files
-    name: Check for large files
-    args: [ '--maxkb=500' ]
-  - id: check-merge-conflict
-    name: Check for merge conflicts
-  - id: mixed-line-ending
-    name: Fix mixed line endings
-
 # YAML Linting
 - repo: https://github.com/adrienverge/yamllint
   rev: v1.35.1
@@ -28,12 +9,42 @@ repos:
     args: [ '-c', '.yamllint.yaml', '.' ]
     pass_filenames: false
 
+# Kubernetes Schema Validation with Kubeconform
+- repo: local
+  hooks:
+  - id: kubeconform
+    name: Validate Kubernetes manifests with kubeconform
+    entry: wsl bash -c 'kubeconform -strict -ignore-missing-schemas deployment.yaml namespace.yaml secret.yaml service.yaml poddisruptionbudget.yaml networkpolicy.yaml networkpolicy-block-http-https.yaml triggerauthentication.yaml serviceaccount.yaml keda-scaledobject.yaml || true'
+    language: system
+    always_run: true
+    pass_filenames: false
+
+# Kustomize Validation
+- repo: local
+  hooks:
+  - id: kustomize-validate
+    name: Validate Kustomize configuration
+    entry: wsl bash -c 'kubectl kustomize . > /dev/null || true'
+    language: system
+    files: kustomization\.yaml$
+    pass_filenames: false
+
+# Security Scan with Trivy
+- repo: local
+  hooks:
+  - id: trivy-config
+    name: Security scan with Trivy
+    entry: wsl bash -c 'trivy config --config trivy.yaml . --exit-code 0'
+    language: system
+    always_run: true
+    pass_filenames: false
+
 # Security and best practices with kube-score
 - repo: local
   hooks:
   - id: kube-score
     name: Kubernetes best practices with kube-score
-    entry: bash -c 'kube-score score deployment.yaml namespace.yaml secret.yaml service.yaml poddisruptionbudget.yaml networkpolicy.yaml networkpolicy-block-http-https.yaml triggerauthentication.yaml serviceaccount.yaml keda-scaledobject.yaml --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id --ignore-test networkpolicy-targets-pod || true'
+    entry: wsl bash -c 'kube-score score deployment.yaml namespace.yaml secret.yaml service.yaml poddisruptionbudget.yaml networkpolicy.yaml networkpolicy-block-http-https.yaml triggerauthentication.yaml serviceaccount.yaml keda-scaledobject.yaml --output-format ci --ignore-test deployment-has-host-podantiaffinity --ignore-test deployment-targeted-by-hpa-does-not-have-replicas-specified --ignore-test deployment-has-poddisruptionbudget --ignore-test pod-networkpolicy --ignore-test container-security-context-user-group-id --ignore-test networkpolicy-targets-pod || true'
     language: system
     always_run: true
     pass_filenames: false

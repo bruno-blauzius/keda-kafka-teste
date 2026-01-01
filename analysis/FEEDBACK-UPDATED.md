@@ -15,7 +15,8 @@
 
 | # | Melhoria | Status | Data | Evidência |
 |---|----------|--------|------|-----------|
-| 1 | Labels Obrigatórias | ✅ | 01/01/2026 | managed-by: keda, owner: devops-team |
+| 1 | Labels Obrigatórias | ✅ | 01/01/2026 | managed-by: keda |
+| 1 | Labels Obrigatórias | ✅ | 01/01/2026 | owner: devops-team |
 | 2 | Secret Classification | ✅ | 01/01/2026 | confidentiality: confidential |
 | 3 | ServiceAccount + RBAC | ✅ | 01/01/2026 | keda-kafka-consumer SA ativa |
 | 4 | Pod Anti-Affinity | ✅ | 01/01/2026 | Distribuição em nodes diferentes |
@@ -47,6 +48,7 @@
 **Status:** IMPLEMENTADO ✅
 
 **Evidência:**
+
 ```yaml
 # deployment.yaml - metadata.labels
 app: keda-kafka-consumer
@@ -57,11 +59,13 @@ owner: devops-team         # ✅ Adicionado
 ```
 
 **Impacto:**
+
 - ✅ Compliance com política `policy-require-labels`
 - ✅ Rastreabilidade melhorada
 - ✅ Formato válido (sem espaços)
 
 **Problema Corrigido:**
+
 - ❌ ANTES: `managed-by: "Keda scaled deployment"` (inválido - espaços)
 - ❌ ANTES: `owner: "Bruno Blauzius Schuindt"` (inválido - espaços)
 - ✅ DEPOIS: Labels conformes com regex Kubernetes
@@ -73,6 +77,7 @@ owner: devops-team         # ✅ Adicionado
 **Status:** IMPLEMENTADO ✅
 
 **Evidência:**
+
 ```yaml
 # secret.yaml
 metadata:
@@ -81,6 +86,7 @@ metadata:
 ```
 
 **Verificação no cluster:**
+
 ```bash
 kubectl get secret kafka-config -n dev \
   -o jsonpath='{.metadata.labels.confidentiality}'
@@ -88,6 +94,7 @@ kubectl get secret kafka-config -n dev \
 ```
 
 **Impacto:**
+
 - ✅ Compliance com `policy-secret-classification`
 - ✅ Auditoria e governança de dados sensíveis
 - ✅ Classificação adequada para secrets de produção
@@ -99,6 +106,7 @@ kubectl get secret kafka-config -n dev \
 **Status:** IMPLEMENTADO ✅
 
 **Evidência:**
+
 ```yaml
 # serviceaccount.yaml
 apiVersion: v1
@@ -116,6 +124,7 @@ rules:
 ```
 
 **Aplicação no deployment:**
+
 ```yaml
 spec:
   template:
@@ -124,6 +133,7 @@ spec:
 ```
 
 **Verificação no cluster:**
+
 ```bash
 kubectl get deployment keda-kafka-consumer -n dev \
   -o jsonpath='{.spec.template.spec.serviceAccountName}'
@@ -131,6 +141,7 @@ kubectl get deployment keda-kafka-consumer -n dev \
 ```
 
 **Impacto:**
+
 - ✅ Least Privilege (RBAC mínimo)
 - ✅ Acesso restrito apenas ao secret necessário
 - ✅ Conformidade com CIS Kubernetes Benchmark
@@ -142,6 +153,7 @@ kubectl get deployment keda-kafka-consumer -n dev \
 **Status:** IMPLEMENTADO ✅
 
 **Evidência:**
+
 ```yaml
 # deployment.yaml
 spec:
@@ -159,12 +171,14 @@ spec:
 ```
 
 **Impacto:**
+
 - ✅ Pods distribuídos em nodes diferentes
 - ✅ Resiliência contra falha de node único
 - ✅ Alta disponibilidade melhorada
 - ✅ Conformidade com best practices de HA
 
 **Comportamento:**
+
 - `preferredDuringScheduling`: Não bloqueia se não houver nodes
 disponíveis
 - `weight: 100`: Alta prioridade na distribuição
@@ -177,6 +191,7 @@ disponíveis
 **Status:** NÃO IMPLEMENTADO ❌
 
 **Atual (exec probes):**
+
 ```yaml
 livenessProbe:
   exec:
@@ -187,6 +202,7 @@ readinessProbe:
 ```
 
 **Recomendado (HTTP probes):**
+
 ```yaml
 # Requer aplicação expor endpoints /healthz e /ready
 livenessProbe:
@@ -208,11 +224,13 @@ startupProbe:
 ```
 
 **Pendências:**
+
 - ❌ Aplicação precisa implementar endpoints HTTP de health
 - ❌ Expor porta management separada (ex: 8081)
 - ❌ Alterar probes no deployment.yaml
 
 **Impacto da implementação:**
+
 - ⬆️ Performance (HTTP mais rápido que exec)
 - ⬆️ Confiabilidade (menos falsos positivos)
 - ⬆️ Observabilidade (métricas de health)
@@ -223,7 +241,7 @@ startupProbe:
 
 ### Score de Implementação: 80% ✅
 
-```
+```text
 ████████████████░░░░ 80% (4/5 melhorias)
 
 ✅ Implementado:     4 itens
@@ -234,7 +252,7 @@ startupProbe:
 
 ### Evolução da Nota
 
-```
+```text
 Análise Inicial (Dez 2025): 9.2/10
 Após Melhorias (Jan 2026):  9.6/10
 Ganho:                      +0.4 pontos (+4.3%)
@@ -249,6 +267,7 @@ Ganho:                      +0.4 pontos (+4.3%)
 **Conquistas:**
 
 ✅ **Security Hardening Completo**
+
 - Non-root containers
 - ReadOnly filesystem
 - Capabilities dropped
@@ -257,6 +276,7 @@ Ganho:                      +0.4 pontos (+4.3%)
 - RBAC least privilege
 
 ✅ **Resiliência Enterprise**
+
 - KEDA autoscaling
 - PodDisruptionBudget
 - Pod Anti-Affinity
@@ -264,6 +284,7 @@ Ganho:                      +0.4 pontos (+4.3%)
 - Health checks
 
 ✅ **Governança Avançada**
+
 - 18 políticas Kyverno ativas
 - Labels padronizadas
 - Pre-commit validation
@@ -271,6 +292,7 @@ Ganho:                      +0.4 pontos (+4.3%)
 - RBAC implementado
 
 ✅ **Compliance**
+
 - CIS Kubernetes Benchmark
 - RBAC mínimo
 - Secret management
@@ -338,16 +360,19 @@ Ganho:                      +0.4 pontos (+4.3%)
 ### 1. Validação de Labels
 
 **Problema:** Labels com espaços causaram erro no apply
-```
+
+```text
 Invalid value: "Keda scaled deployment"
 ```
 
 **Solução:** Labels devem seguir regex Kubernetes
+
 ```regex
 (([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?
 ```
 
 **Formato válido:**
+
 - ✅ `kebab-case`: `devops-team`
 - ✅ `snake_case`: `devops_team`
 - ✅ `single-word`: `keda`
@@ -356,6 +381,7 @@ Invalid value: "Keda scaled deployment"
 ### 2. ServiceAccount Aplicação
 
 **Importante:** Criar ServiceAccount não é suficiente, precisa:
+
 1. ✅ Criar SA, Role, RoleBinding
 2. ✅ Adicionar `serviceAccountName` no deployment
 3. ✅ Aplicar via `kubectl apply -k .`
@@ -363,6 +389,7 @@ Invalid value: "Keda scaled deployment"
 ### 3. Pod Anti-Affinity
 
 **Tipo escolhido:** `preferredDuringScheduling`
+
 - ✅ Não bloqueia scheduling se não houver nodes disponíveis
 - ✅ Melhor para ambientes com recursos limitados
 - ⚠️ Alternativa: `requiredDuringScheduling` (mais rígido)
@@ -376,6 +403,7 @@ O projeto **kafka-keda-scaled** evoluiu de **ADVANCED (9.2/10)** para
 críticas**.
 
 **Conquistas:**
+
 - ✅ 80% das melhorias implementadas
 - ✅ Score de Arquitetura: 9.5 → 10.0
 - ✅ Score de Governança: 9.0 → 10.0
@@ -383,6 +411,7 @@ críticas**.
 - ✅ Conformidade total com políticas Kyverno
 
 **Este projeto agora serve como REFERÊNCIA PLATINUM para:**
+
 - Deployments Kafka em produção
 - Security hardening avançado
 - RBAC least privilege
